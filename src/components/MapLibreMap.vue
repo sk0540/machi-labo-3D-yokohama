@@ -40,6 +40,27 @@ onMounted(() => {
     });
     map.on('load', () => {
         map.addSource('terrain', gsiTerrainSource);
+        map.addSource('plateau', {
+            type: 'vector',
+            tiles: ['https://indigo-lab.github.io/plateau-tokyo23ku-building-mvt-2020/{z}/{x}/{y}.pbf'],
+            minzoom: 10,
+            maxzoom: 16,
+            attribution:
+                "データの出典：<a href='https://github.com/indigo-lab/plateau-tokyo23ku-building-mvt-2020'>plateau-tokyo23ku-building-mvt-2020 by indigo-lab</a> (<a href='https://www.mlit.go.jp/plateau/'>国土交通省 Project PLATEAU</a> のデータを加工して作成)",
+        },);
+        map.addLayer({
+            id: 'bldg',
+            type: 'fill-extrusion',
+            source: 'plateau',
+            'source-layer': 'bldg',
+            minzoom: 10,
+            maxzoom: 20,
+            paint: {
+                'fill-extrusion-color': '#797979',
+                'fill-extrusion-height': ['get', 'measuredHeight'],
+            },
+        });
+
         map.addLayer({
             id: 'hills',
             type: 'hillshade',
@@ -52,7 +73,14 @@ onMounted(() => {
             type: 'background',
             paint: { 'background-color': '#fff' }
         }, 'hills');//タイルの境目に標高ノイズを発生させないための白背景
+
         map.setTerrain({ source: 'terrain' },);
+
+        /*map.addControl(
+            new maplibreGl.TerrainControl({
+                source: 'terrain'
+            })
+        );*/
     });
 });
 
