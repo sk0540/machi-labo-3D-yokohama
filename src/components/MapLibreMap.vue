@@ -37,29 +37,41 @@ onMounted(() => {
         center: [139.767125, 35.681236],
         zoom: 11,
         maxPitch: 68,
+        minZoom: 9,
+        maxZoom: 17.999
     });
     map.on('load', () => {
         map.addSource('terrain', gsiTerrainSource);
-        map.addSource('plateau', {
+        /*map.addSource('plateau', {
             type: 'vector',
             tiles: ['https://indigo-lab.github.io/plateau-tokyo23ku-building-mvt-2020/{z}/{x}/{y}.pbf'],
             minzoom: 10,
             maxzoom: 16,
             attribution:
                 "データの出典：<a href='https://github.com/indigo-lab/plateau-tokyo23ku-building-mvt-2020'>plateau-tokyo23ku-building-mvt-2020 by indigo-lab</a> (<a href='https://www.mlit.go.jp/plateau/'>国土交通省 Project PLATEAU</a> のデータを加工して作成)",
-        },);
-        map.addLayer({
+        },);*/
+        map.addSource('mvt', {
+            type: 'vector',
+            tiles: ['http://localhost:5173//mvt/{z}/{x}/{y}.pbf'],
+            minzoom: 12,
+            maxzoom: 16
+        });
+        /*map.addSource('test', {
+            type: 'geojson',
+            data: '53391540.geojson'
+        });*/
+        /*map.addLayer({
             id: 'bldg',
             type: 'fill-extrusion',
             source: 'plateau',
             'source-layer': 'bldg',
             minzoom: 10,
-            maxzoom: 20,
+            maxzoom: 18,
             paint: {
                 'fill-extrusion-color': '#797979',
                 'fill-extrusion-height': ['get', 'measuredHeight'],
             },
-        });
+        });*/
 
         map.addLayer({
             id: 'hills',
@@ -71,9 +83,29 @@ onMounted(() => {
         map.addLayer({
             id: 'background',
             type: 'background',
+            minzoom: 9,
+            maxzoom: 18,
             paint: { 'background-color': '#fff' }
         }, 'hills');//タイルの境目に標高ノイズを発生させないための白背景
-
+        map.addLayer({
+            id: 'mvt',
+            type: 'fill-extrusion',
+            source: 'mvt',
+            'source-layer': 'bldg',
+            paint: {
+                'fill-extrusion-color': '#797979',
+                'fill-extrusion-height': ['get', 'measuredHeight'],
+            },
+        });
+        /*map.addLayer({
+            id: 'test',
+            type: 'fill-extrusion',
+            source: 'test',
+            paint: {
+                'fill-extrusion-color': '#797979',
+                'fill-extrusion-height': ['get', 'measuredHeight'],
+            },
+        });*/
         map.setTerrain({ source: 'terrain' },);
 
         /*map.addControl(
