@@ -56,10 +56,10 @@ onMounted(() => {
             minzoom: 12,
             maxzoom: 16
         });
-        /*map.addSource('test', {
+        map.addSource('test', {
             type: 'geojson',
-            data: '53391540.geojson'
-        });*/
+            data: 'urf_6697_op.geojson'
+        });
         /*map.addLayer({
             id: 'bldg',
             type: 'fill-extrusion',
@@ -93,20 +93,56 @@ onMounted(() => {
             source: 'mvt',
             'source-layer': 'bldg',
             paint: {
-                'fill-extrusion-color': '#797979',
+                'fill-extrusion-color': [
+                    'match',
+                    ['get', 'function'],
+                    1, '#57ae4c',
+                    2, '#6ad08e',
+                    3, '#8dcb49',
+                    4, '#b1b700',
+                    5, '#d8cb57',
+                    6, '#ddb696',
+                    7, '#db9b61',
+                    9, '#d093ba',
+                    10, '#e27096',
+                    11, '#a5a5de',
+                    12, '#5ecccc',
+                    13, '#6296dd',
+                    23, '#999999',
+                    /* default color if 'function' value doesn't match any of the above */
+                    '#cccccc'
+                ],
                 'fill-extrusion-height': ['get', 'measuredHeight'],
             },
         });
-        /*map.addLayer({
+        map.addLayer({
             id: 'test',
-            type: 'fill-extrusion',
+            type: 'fill',
             source: 'test',
-            paint: {
-                'fill-extrusion-color': '#797979',
-                'fill-extrusion-height': ['get', 'measuredHeight'],
-            },
-        });*/
-        map.setTerrain({ source: 'terrain' },);
+            'paint': {
+                'fill-color': [
+                    'match',
+                    ['get', 'function'],
+                    1, '#57ae4c',
+                    2, '#6ad08e',
+                    3, '#8dcb49',
+                    4, '#b1b700',
+                    5, '#d8cb57',
+                    6, '#ddb696',
+                    7, '#db9b61',
+                    9, '#d093ba',
+                    10, '#e27096',
+                    11, '#a5a5de',
+                    12, '#5ecccc',
+                    13, '#6296dd',
+                    23, '#999999',
+                    /* default color if 'function' value doesn't match any of the above */
+                    '#cccccc'
+                ],
+                'fill-opacity': 0.1,
+            }
+        });
+        map.setTerrain({ source: 'terrain' });
 
         /*map.addControl(
             new maplibreGl.TerrainControl({
