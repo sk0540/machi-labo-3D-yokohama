@@ -34,14 +34,14 @@ onMounted(() => {
                         exaggeration: 1.2,
                     },
                 },*/
-        center: [139.767125, 35.681236],
-        zoom: 11,
+        center: [139.63417, 35.450288],
+        zoom: 12,
         maxPitch: 68,
         minZoom: 9,
         maxZoom: 17.999
     });
 
-    const colors = {
+    const colors: { [key: number]: string } = {
         1: '#57ae4c',
         2: '#6ad08e',
         3: '#8dcb49',
@@ -55,7 +55,7 @@ onMounted(() => {
         12: '#5ecccc',
         13: '#6296dd',
         23: '#999999',
-        default: '#cccccc'
+        0: '#cccccc'
     };
 
     const descs: { [key: number]: string } = {
@@ -73,6 +73,7 @@ onMounted(() => {
         13: "工業専用地域",
         23: "市街化調整区域"
     }
+
     map.on('load', () => {
         map.addSource('terrain', gsiTerrainSource);
         /*map.addSource('plateau', {
@@ -83,9 +84,11 @@ onMounted(() => {
             attribution:
                 "データの出典：<a href='https://github.com/indigo-lab/plateau-tokyo23ku-building-mvt-2020'>plateau-tokyo23ku-building-mvt-2020 by indigo-lab</a> (<a href='https://www.mlit.go.jp/plateau/'>国土交通省 Project PLATEAU</a> のデータを加工して作成)",
         },);*/
+
+
         map.addSource('buildings', {
             type: 'vector',
-            tiles: ['http://localhost:5173//mvt/{z}/{x}/{y}.pbf'],
+            tiles: [window.location.href + 'mvt/{z}/{x}/{y}.pbf'],
             minzoom: 12,
             maxzoom: 16
         });
@@ -142,7 +145,7 @@ onMounted(() => {
                     12, colors[12],
                     13, colors[13],
                     23, colors[23],
-                    colors.default
+                    colors[0]
                 ],
                 'fill-extrusion-height': ['get', 'measuredHeight'],
             },
@@ -168,7 +171,7 @@ onMounted(() => {
                     12, colors[12],
                     13, colors[13],
                     23, colors[23],
-                    colors.default
+                    colors[0]
                 ],
                 'fill-opacity': 0.1,
             }
@@ -184,8 +187,9 @@ onMounted(() => {
         map.on('mousemove', 'zones', (e) => {
             if (e.features) {
                 const zoneNum = e.features[0].properties.function;
+                const htmlContent = `<div class="desc" style="--icon-color-var: ${colors[zoneNum]};">${descs[zoneNum]}</div>`;
                 map.getCanvas().style.cursor = 'pointer';
-                popup.setLngLat(e.lngLat).setHTML(descs[zoneNum]).addTo(map);
+                popup.setLngLat(e.lngLat).setHTML(htmlContent).addTo(map);
             }
         });
         map.on('mouseleave', 'zones', () => {
