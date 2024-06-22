@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import 'maplibre-gl/dist/maplibre-gl.css'
 import maplibreGl, { Map } from 'maplibre-gl'
-import { onMounted } from 'vue'
+import { onMounted, createApp, h } from 'vue'
+import MapPopup from './MapPopup.vue';
 import { useGsiTerrainSource } from 'maplibre-gl-gsi-terrain';
 onMounted(() => {
     const gsiTerrainSource = useGsiTerrainSource(maplibreGl.addProtocol);
@@ -34,12 +35,32 @@ onMounted(() => {
                         exaggeration: 1.2,
                     },
                 },*/
-        center: [139.767125, 35.681236],
-        zoom: 11,
+        center: [139.63417, 35.450288],
+        zoom: 12,
         maxPitch: 68,
         minZoom: 9,
         maxZoom: 17.999
     });
+
+    const colors: { [key: number]: string } = {
+        1: '#57ae4c',
+        2: '#6ad08e',
+        3: '#8dcb49',
+        4: '#b1b700',
+        5: '#d8cb57',
+        6: '#ddb696',
+        7: '#db9b61',
+        9: '#d093ba',
+        10: '#e27096',
+        11: '#a5a5de',
+        12: '#5ecccc',
+        13: '#6296dd',
+        23: '#999999',
+        0: '#cccccc'
+    };
+
+
+
     map.on('load', () => {
         map.addSource('terrain', gsiTerrainSource);
         /*map.addSource('plateau', {
@@ -50,13 +71,15 @@ onMounted(() => {
             attribution:
                 "データの出典：<a href='https://github.com/indigo-lab/plateau-tokyo23ku-building-mvt-2020'>plateau-tokyo23ku-building-mvt-2020 by indigo-lab</a> (<a href='https://www.mlit.go.jp/plateau/'>国土交通省 Project PLATEAU</a> のデータを加工して作成)",
         },);*/
-        map.addSource('mvt', {
+
+
+        map.addSource('buildings', {
             type: 'vector',
-            tiles: ['http://localhost:5173//mvt/{z}/{x}/{y}.pbf'],
+            tiles: [window.location.href + 'mvt/{z}/{x}/{y}.pbf'],
             minzoom: 12,
             maxzoom: 16
         });
-        map.addSource('test', {
+        map.addSource('zones', {
             type: 'geojson',
             data: 'urf_6697_op.geojson'
         });
@@ -88,61 +111,101 @@ onMounted(() => {
             paint: { 'background-color': '#fff' }
         }, 'hills');//タイルの境目に標高ノイズを発生させないための白背景
         map.addLayer({
-            id: 'mvt',
+            id: 'buildings',
             type: 'fill-extrusion',
-            source: 'mvt',
+            source: 'buildings',
             'source-layer': 'bldg',
             paint: {
                 'fill-extrusion-color': [
                     'match',
                     ['get', 'function'],
-                    1, '#57ae4c',
-                    2, '#6ad08e',
-                    3, '#8dcb49',
-                    4, '#b1b700',
-                    5, '#d8cb57',
-                    6, '#ddb696',
-                    7, '#db9b61',
-                    9, '#d093ba',
-                    10, '#e27096',
-                    11, '#a5a5de',
-                    12, '#5ecccc',
-                    13, '#6296dd',
-                    23, '#999999',
-                    /* default color if 'function' value doesn't match any of the above */
-                    '#cccccc'
+                    1, colors[1],
+                    2, colors[2],
+                    3, colors[3],
+                    4, colors[4],
+                    5, colors[5],
+                    6, colors[6],
+                    7, colors[7],
+                    9, colors[9],
+                    10, colors[10],
+                    11, colors[11],
+                    12, colors[12],
+                    13, colors[13],
+                    23, colors[23],
+                    colors[0]
                 ],
                 'fill-extrusion-height': ['get', 'measuredHeight'],
             },
         });
         map.addLayer({
-            id: 'test',
+            id: 'zones',
             type: 'fill',
-            source: 'test',
+            source: 'zones',
             'paint': {
                 'fill-color': [
                     'match',
                     ['get', 'function'],
-                    1, '#57ae4c',
-                    2, '#6ad08e',
-                    3, '#8dcb49',
-                    4, '#b1b700',
-                    5, '#d8cb57',
-                    6, '#ddb696',
-                    7, '#db9b61',
-                    9, '#d093ba',
-                    10, '#e27096',
-                    11, '#a5a5de',
-                    12, '#5ecccc',
-                    13, '#6296dd',
-                    23, '#999999',
-                    /* default color if 'function' value doesn't match any of the above */
-                    '#cccccc'
+                    1, colors[1],
+                    2, colors[2],
+                    3, colors[3],
+                    4, colors[4],
+                    5, colors[5],
+                    6, colors[6],
+                    7, colors[7],
+                    9, colors[9],
+                    10, colors[10],
+                    11, colors[11],
+                    12, colors[12],
+                    13, colors[13],
+                    23, colors[23],
+                    colors[0]
                 ],
                 'fill-opacity': 0.1,
             }
         });
         map.setTerrain({ source: 'terrain' });
+
+
+        // Create a popup, but don't add it to the map yet.
+        const hoverPopup = new maplibreGl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        map.on('mousemove', 'zones', (e) => {
+            if (e.features) {
+                const zoneNum = e.features[0].properties.function;
+                const popupNode = document.createElement('div');
+                const popupVue = createApp({
+                    render: () => h(MapPopup, { num: zoneNum, color: colors[zoneNum], popupType: 'hover' })
+                });
+                popupVue.mount(popupNode);
+                hoverPopup.setDOMContent(popupNode);
+                map.getCanvas().style.cursor = 'pointer';
+                hoverPopup.setLngLat(e.lngLat).addTo(map);
+            }
+        });
+        map.on('mouseleave', 'zones', () => {
+            map.getCanvas().style.cursor = '';
+            hoverPopup.remove();
+        });
+        const clickPopup = new maplibreGl.Popup({ closeOnClick: false });
+        map.on('click', 'zones', (e) => {
+            if (e.features) {
+                const zoneNum = e.features[0].properties.function;
+                const popupNode = document.createElement('div');
+                const popupVue = createApp({
+                    render: () => h(MapPopup, { num: zoneNum, color: colors[zoneNum], popupType: 'click' })
+                });
+                popupVue.mount(popupNode);
+                clickPopup.setDOMContent(popupNode);
+                map.getCanvas().style.cursor = 'pointer';
+                clickPopup.setLngLat(e.lngLat).addTo(map);
+            }
+        });
+
+
+
 
         /*map.addControl(
             new maplibreGl.TerrainControl({
