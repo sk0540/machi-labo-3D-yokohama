@@ -2,15 +2,3 @@ body {
   height: 100vh;
 }
 
-.desc{
-  font-size:15px;
-  font-weight: 500;
-  line-height: 1em;
-}
-.desc::before {
-  content: "■";
-  font-size: 30px;
-  margin-right: 5px;
-  vertical-align: -1px;
-  color: var(--icon-color-var);
-}
