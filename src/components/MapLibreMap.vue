@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import 'maplibre-gl/dist/maplibre-gl.css'
-import maplibreGl, { Map } from 'maplibre-gl'
-import { onMounted, createApp, h } from 'vue'
-import MapPopup from './MapPopup.vue';
+import maplibreGl, { Map, Popup, DataDrivenPropertyValueSpecification } from 'maplibre-gl'
+import { onMounted, createApp, App } from 'vue';
+import MapZoneDesc from './MapZoneDesc.vue';
 import { useGsiTerrainSource } from 'maplibre-gl-gsi-terrain';
+import { menuControl } from '../menuControl';
+import { zoneColors } from '../data/zoneData';
+
 onMounted(() => {
     const gsiTerrainSource = useGsiTerrainSource(maplibreGl.addProtocol);
 
@@ -42,23 +45,24 @@ onMounted(() => {
         maxZoom: 17.999
     });
 
-    const colors: { [key: number]: string } = {
-        1: '#57ae4c',
-        2: '#6ad08e',
-        3: '#8dcb49',
-        4: '#b1b700',
-        5: '#d8cb57',
-        6: '#ddb696',
-        7: '#db9b61',
-        9: '#d093ba',
-        10: '#e27096',
-        11: '#a5a5de',
-        12: '#5ecccc',
-        13: '#6296dd',
-        23: '#999999',
-        0: '#cccccc'
-    };
-
+    const paintStatus: DataDrivenPropertyValueSpecification<string> = [
+        'match',
+        ['get', 'function'],
+        1, zoneColors[1],
+        2, zoneColors[2],
+        3, zoneColors[3],
+        4, zoneColors[4],
+        5, zoneColors[5],
+        6, zoneColors[6],
+        7, zoneColors[7],
+        9, zoneColors[9],
+        10, zoneColors[10],
+        11, zoneColors[11],
+        12, zoneColors[12],
+        13, zoneColors[13],
+        23, zoneColors[23],
+        zoneColors[0]
+    ];
 
 
     map.on('load', () => {
@@ -116,24 +120,7 @@ onMounted(() => {
             source: 'buildings',
             'source-layer': 'bldg',
             paint: {
-                'fill-extrusion-color': [
-                    'match',
-                    ['get', 'function'],
-                    1, colors[1],
-                    2, colors[2],
-                    3, colors[3],
-                    4, colors[4],
-                    5, colors[5],
-                    6, colors[6],
-                    7, colors[7],
-                    9, colors[9],
-                    10, colors[10],
-                    11, colors[11],
-                    12, colors[12],
-                    13, colors[13],
-                    23, colors[23],
-                    colors[0]
-                ],
+                'fill-extrusion-color': paintStatus,
                 'fill-extrusion-height': ['get', 'measuredHeight'],
             },
         });
@@ -142,62 +129,58 @@ onMounted(() => {
             type: 'fill',
             source: 'zones',
             'paint': {
-                'fill-color': [
-                    'match',
-                    ['get', 'function'],
-                    1, colors[1],
-                    2, colors[2],
-                    3, colors[3],
-                    4, colors[4],
-                    5, colors[5],
-                    6, colors[6],
-                    7, colors[7],
-                    9, colors[9],
-                    10, colors[10],
-                    11, colors[11],
-                    12, colors[12],
-                    13, colors[13],
-                    23, colors[23],
-                    colors[0]
-                ],
+                'fill-color': paintStatus,
                 'fill-opacity': 0.1,
             }
         });
         map.setTerrain({ source: 'terrain' });
 
 
-        // Create a popup, but don't add it to the map yet.
-        const hoverPopup = new maplibreGl.Popup({
+        //追加するポップアップを宣言
+        const hoverPopup = new Popup({
             closeButton: false,
             closeOnClick: false
         });
-
+        let hoverPopupVue: App;
+        let zoneNum: number;
         map.on('mousemove', 'zones', (e) => {
             if (e.features) {
-                const zoneNum = e.features[0].properties.function;
-                const popupNode = document.createElement('div');
-                const popupVue = createApp({
-                    render: () => h(MapPopup, { num: zoneNum, color: colors[zoneNum], popupType: 'hover' })
-                });
-                popupVue.mount(popupNode);
-                hoverPopup.setDOMContent(popupNode);
-                map.getCanvas().style.cursor = 'pointer';
+                if (zoneNum != e.features[0].properties.function) {
+                    if (hoverPopupVue) {
+                        hoverPopupVue.unmount();
+                    }
+                    zoneNum = e.features[0].properties.function;
+                    const popupNode = document.createElement('div');
+                    hoverPopupVue = createApp(MapZoneDesc, {
+                        num: zoneNum, display: 'title'
+                    });
+                    hoverPopupVue.mount(popupNode);
+                    hoverPopup.setDOMContent(popupNode);
+                    map.getCanvas().style.cursor = 'pointer';
+                }
                 hoverPopup.setLngLat(e.lngLat).addTo(map);
             }
         });
+
         map.on('mouseleave', 'zones', () => {
             map.getCanvas().style.cursor = '';
             hoverPopup.remove();
+            hoverPopupVue.unmount();
+            zoneNum = 0;
         });
-        const clickPopup = new maplibreGl.Popup({ closeOnClick: false });
+        const clickPopup = new Popup({ closeOnClick: false });
+        let clickPopupVue: App;
         map.on('click', 'zones', (e) => {
+            if (clickPopupVue) {
+                clickPopupVue.unmount();
+            }
             if (e.features) {
                 const zoneNum = e.features[0].properties.function;
                 const popupNode = document.createElement('div');
-                const popupVue = createApp({
-                    render: () => h(MapPopup, { num: zoneNum, color: colors[zoneNum], popupType: 'click' })
+                clickPopupVue = createApp(MapZoneDesc, {
+                    num: zoneNum, display: 'detail'
                 });
-                popupVue.mount(popupNode);
+                clickPopupVue.mount(popupNode);
                 clickPopup.setDOMContent(popupNode);
                 map.getCanvas().style.cursor = 'pointer';
                 clickPopup.setLngLat(e.lngLat).addTo(map);
@@ -205,8 +188,10 @@ onMounted(() => {
         });
 
 
-
-
+        map.addControl(new maplibreGl.NavigationControl());
+        map.addControl(new maplibreGl.ScaleControl());
+        map.addControl(new menuControl(), 'top-left');
+        //map.addControl(new legendControl(), 'top-left');
         /*map.addControl(
             new maplibreGl.TerrainControl({
                 source: 'terrain'

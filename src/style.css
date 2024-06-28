@@ -1,4 +1,8 @@
 body {
   height: 100vh;
+  margin: 0;
 }
 
+.maplibregl-popup-close-button{
+  font-size: 1.125rem;
+}
