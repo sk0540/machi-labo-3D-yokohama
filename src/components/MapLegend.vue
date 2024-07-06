@@ -1,9 +1,8 @@
 <template>
     <div class="legend-container">
-        <div class="legend" v-for="zoneNum in zoneNums" :key="zoneNum"
-            :class="{ detail: zoneNum === activeZoneNum, title: zoneNum !== activeZoneNum }">
+        <div class="legend" v-for="zoneNum in zoneNums" :key="zoneNum" :class="displayType(zoneNum)">
             <div class="legend-inner" @click="handleClick(zoneNum)">
-                <MapZoneDesc :num="zoneNum" :display="zoneNum === activeZoneNum ? 'detail' : 'title'" />
+                <MapZoneDesc :num="zoneNum" :display="displayType(zoneNum)" />
             </div>
         </div>
     </div>
@@ -23,6 +22,15 @@ const handleClick = (zoneNum: number) => {
         activeZoneNum.value = zoneNum;
     }
 };
+const displayType = (zoneNum: number) => {
+    if (zoneNum === activeZoneNum.value) {
+        return 'detail';
+    }
+    else {
+        return 'title';
+    }
+};
+
 </script>
 <style scoped>
 .legend-container {

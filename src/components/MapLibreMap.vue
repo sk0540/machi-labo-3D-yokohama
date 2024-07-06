@@ -5,6 +5,7 @@ import { onMounted, createApp, App } from 'vue';
 import MapZoneDesc from './MapZoneDesc.vue';
 import { useGsiTerrainSource } from 'maplibre-gl-gsi-terrain';
 import { menuControl } from '../menuControl';
+import { titleControl } from '../titleControl';
 import { zoneColors } from '../data/zoneData';
 
 onMounted(() => {
@@ -22,7 +23,7 @@ onMounted(() => {
                             tiles: [
                                 'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
                             ],
-                            attribution: '国土地理院',
+                            attribution: '地理院地図Vector（仮称）',
                         },
                         gsidem: gsiTerrainSource,
                     },
@@ -38,9 +39,11 @@ onMounted(() => {
                         exaggeration: 1.2,
                     },
                 },*/
-        center: [139.63417, 35.450288],
+        center: [139.62, 35.43],
         zoom: 12,
+        pitch: 43,
         maxPitch: 68,
+        maxBounds: [[136, 33], [143, 37]],
         minZoom: 9,
         maxZoom: 17.999
     });
@@ -81,11 +84,13 @@ onMounted(() => {
             type: 'vector',
             tiles: [window.location.href + 'mvt/{z}/{x}/{y}.pbf'],
             minzoom: 12,
-            maxzoom: 16
+            maxzoom: 16,
+            attribution: "<a href='https://www.mlit.go.jp/plateau/'>国土交通省 Project PLATEAU</a>"
         });
         map.addSource('zones', {
             type: 'geojson',
-            data: 'urf_6697_op.geojson'
+            data: 'urf_6697_op.geojson',
+            attribution: "加工元の出典："
         });
         /*map.addLayer({
             id: 'bldg',
@@ -122,20 +127,34 @@ onMounted(() => {
             paint: {
                 'fill-extrusion-color': paintStatus,
                 'fill-extrusion-height': ['get', 'measuredHeight'],
-            },
-        });
+            }
+        }, 'gsibv-vectortile-layer-2035'//国土地理院タイルの地図記号のすぐ下bの重なり位置に)
+        );
         map.addLayer({
             id: 'zones',
             type: 'fill',
             source: 'zones',
             'paint': {
                 'fill-color': paintStatus,
-                'fill-opacity': 0.1,
+                'fill-opacity': [
+                    "step",
+                    ["zoom"],
+                    0.3,
+                    12,
+                    0.2,
+                    14,
+                    0.1
+                ],
             }
-        });
+        }, 'gsibv-vectortile-layer-1604');
         map.setTerrain({ source: 'terrain' });
 
-
+        //地理院paleスタイルの調整
+        map.setLayoutProperty('gsibv-vectortile-layer-2037', "text-size", { "stops": [[9, 14], [11, 17]] });
+        map.setPaintProperty('gsibv-vectortile-layer-2037', 'text-halo-width', 2);
+        map.setPaintProperty('gsibv-vectortile-layer-2203', 'text-halo-width', 1.5);
+        map.setPaintProperty('gsibv-vectortile-layer-2273', 'text-halo-width', 1.5);
+        map.setPaintProperty('gsibv-vectortile-layer-2278', 'text-halo-width', 2);
         //追加するポップアップを宣言
         const hoverPopup = new Popup({
             closeButton: false,
@@ -190,6 +209,7 @@ onMounted(() => {
 
         map.addControl(new maplibreGl.NavigationControl());
         map.addControl(new maplibreGl.ScaleControl());
+        map.addControl(new titleControl(), 'top-left');
         map.addControl(new menuControl(), 'top-left');
         //map.addControl(new legendControl(), 'top-left');
         /*map.addControl(

@@ -12,7 +12,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-const mode = ref("menu");
+const mode = ref<string>("menu");
 import MapLegend from './MapLegend.vue';
 </script>
 <style scoped>
@@ -25,7 +25,7 @@ import MapLegend from './MapLegend.vue';
 
 .map-menu button {
     font-size: 16px;
-    width: 117px;
+    width: 87px;
     height: 39px;
     font-weight: bold;
     color: #333;

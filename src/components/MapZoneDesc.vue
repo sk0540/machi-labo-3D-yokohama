@@ -1,10 +1,11 @@
 <template>
-    <div class="desc-title" :style="style">{{ zoneDescs[num] }}</div>
+    <div class="desc-title">{{ zoneDescs[num] }}</div>
     <div v-if="showComment" class="comment">{{ zoneComments[num] }}</div>
 </template>
 
 <script setup lang="ts">
 import { zoneDescs, zoneColors, zoneComments } from '../data/zoneData';
+import { ref } from 'vue';
 
 import { computed } from 'vue'
 const props = defineProps({
@@ -17,20 +18,22 @@ const props = defineProps({
         required: true,
     }
 });
+const iconColor = ref<string>(zoneColors[props.num]);
+const showComment = computed(() => props.display === "detail");
 
-const style = computed(() => ({
-    '--icon-color': zoneColors[props.num],
-    'font-weight': props.display === 'detail' ? 'bold' : 'normal',
-}));
+const titleWeight = computed(() => {
+    return showComment.value ? 'bold' : 'normal';
+});
 
-const showComment = computed(() => props.display === 'detail');
+
 </script>
 
 <style scoped>
 .desc-title {
     font-size: 15px;
-    font-weight: 500;
+    font-weight: v-bind(titleWeight);
     line-height: 1em;
+
 }
 
 .desc-title::before {
@@ -38,7 +41,7 @@ const showComment = computed(() => props.display === 'detail');
     font-size: 30px;
     margin-right: 5px;
     vertical-align: -1px;
-    color: var(--icon-color);
+    color: v-bind(iconColor);
 }
 
 .comment {
