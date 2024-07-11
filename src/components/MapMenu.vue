@@ -3,6 +3,8 @@
     <div v-if="mode == 'menu'" class="maplibregl-ctrl maplibregl-ctrl-group map-menu">
         <button @click="mode = 'legend'">凡例
         </button>
+        <button>操作ガイド
+        </button>
     </div>
     <div v-if="mode == 'legend'" class="maplibregl-ctrl maplibregl-ctrl-group map-legend">
         <div class="legend-header"><button @click="mode = 'menu'">＜</button>
@@ -24,11 +26,13 @@ import MapLegend from './MapLegend.vue';
 }
 
 .map-menu button {
-    font-size: 16px;
-    width: 87px;
-    height: 39px;
+    font-size: 17px;
+    width: 120px;
+    height: 38px;
     font-weight: bold;
     color: #333;
+    position: relative;
+    top: 1px;
 }
 
 .map-legend {
@@ -51,12 +55,16 @@ import MapLegend from './MapLegend.vue';
     font-weight: bold;
     display: flex;
     align-items: center;
-    font-size: 15px;
+    font-size: 17px;
+
+    padding-top: 1px;
+    padding-left: 5px;
+    margin-bottom: -1px;
 
 }
 
 .legend-header button {
-    height: 39px;
-    width: 39px;
+    height: 38px;
+    width: 38px;
 }
 </style>
