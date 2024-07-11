@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import 'maplibre-gl/dist/maplibre-gl.css'
-import maplibreGl, { Map, Popup, DataDrivenPropertyValueSpecification } from 'maplibre-gl'
+import maplibreGl, { Map, Popup, DataDrivenPropertyValueSpecification, addProtocol, AttributionControl } from 'maplibre-gl'
+import { PMTiles, Protocol } from "pmtiles";
 import { onMounted, createApp, App } from 'vue';
 import MapZoneDesc from './MapZoneDesc.vue';
 import { useGsiTerrainSource } from 'maplibre-gl-gsi-terrain';
@@ -9,7 +10,10 @@ import { titleControl } from '../titleControl';
 import { zoneColors } from '../data/zoneData';
 
 onMounted(() => {
-    const gsiTerrainSource = useGsiTerrainSource(maplibreGl.addProtocol);
+    const gsiTerrainSource = useGsiTerrainSource(addProtocol);
+    const protocol = new Protocol();
+    addProtocol("pmtiles", protocol.tile);
+
 
     const map = new Map({
         container: 'map',
@@ -40,12 +44,13 @@ onMounted(() => {
                     },
                 },*/
         center: [139.62, 35.43],
-        zoom: 12,
+        zoom: 12.3,
         pitch: 43,
         maxPitch: 68,
         maxBounds: [[136, 33], [143, 37]],
         minZoom: 9,
-        maxZoom: 17.999
+        maxZoom: 17.999,
+
     });
 
     const paintStatus: DataDrivenPropertyValueSpecification<string> = [
@@ -80,17 +85,12 @@ onMounted(() => {
         },);*/
 
 
-        map.addSource('buildings', {
+        map.addSource('yokohama_urf', {
             type: 'vector',
-            tiles: [window.location.href + 'mvt/{z}/{x}/{y}.pbf'],
-            minzoom: 12,
-            maxzoom: 16,
-            attribution: "<a href='https://www.mlit.go.jp/plateau/'>国土交通省 Project PLATEAU</a>"
-        });
-        map.addSource('zones', {
-            type: 'geojson',
-            data: 'urf_6697_op.geojson',
-            attribution: "加工元の出典："
+            url: 'pmtiles://yokohama_urf.pmtiles',
+            attribution: "<a href='https://www.mlit.go.jp/plateau/'>国土交通省 Project PLATEAU</a> のデータを加工して作成",
+            minzoom: 10,
+            maxzoom: 14,
         });
         /*map.addLayer({
             id: 'bldg',
@@ -122,18 +122,21 @@ onMounted(() => {
         map.addLayer({
             id: 'buildings',
             type: 'fill-extrusion',
-            source: 'buildings',
+            source: 'yokohama_urf',
             'source-layer': 'bldg',
             paint: {
                 'fill-extrusion-color': paintStatus,
-                'fill-extrusion-height': ['get', 'measuredHeight'],
-            }
+                'fill-extrusion-height':
+                    ['get', 'measuredHeight']
+                ,
+            },
         }, 'gsibv-vectortile-layer-2035'//国土地理院タイルの地図記号のすぐ下bの重なり位置に)
         );
         map.addLayer({
             id: 'zones',
             type: 'fill',
-            source: 'zones',
+            source: 'yokohama_urf',
+            'source-layer': 'urf_6697_op',
             'paint': {
                 'fill-color': paintStatus,
                 'fill-opacity': [
@@ -155,6 +158,7 @@ onMounted(() => {
         map.setPaintProperty('gsibv-vectortile-layer-2203', 'text-halo-width', 1.5);
         map.setPaintProperty('gsibv-vectortile-layer-2273', 'text-halo-width', 1.5);
         map.setPaintProperty('gsibv-vectortile-layer-2278', 'text-halo-width', 2);
+
         //追加するポップアップを宣言
         const hoverPopup = new Popup({
             closeButton: false,
@@ -217,6 +221,8 @@ onMounted(() => {
                 source: 'terrain'
             })
         );*/
+
+
     });
 });
 

@@ -23,8 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# mvt tiles
-public/mvt/
-dist/mvt/
-# layer json
-public/urf_6697_op.geojson
+# pmtiles
+public/urf.pmtiles
