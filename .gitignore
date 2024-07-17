@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # pmtiles
-public/urf.pmtiles
+public/yokohama_urf.pmtiles

@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import 'maplibre-gl/dist/maplibre-gl.css'
-import maplibreGl, { Map, Popup, DataDrivenPropertyValueSpecification, addProtocol, AttributionControl } from 'maplibre-gl'
-import { PMTiles, Protocol } from "pmtiles";
+import maplibreGl, { Map, Popup, DataDrivenPropertyValueSpecification, addProtocol } from 'maplibre-gl'
+import { useGsiTerrainSource } from 'maplibre-gl-gsi-terrain';
+import { Protocol } from "pmtiles";
 import { onMounted, createApp, App } from 'vue';
 import MapZoneDesc from './MapZoneDesc.vue';
-import { useGsiTerrainSource } from 'maplibre-gl-gsi-terrain';
+import MapGuide from './MapGuide.vue';
+import MapTitle from './MapTitle.vue';
+import MapSearch from './MapSearch.vue';
 import { menuControl } from '../menuControl';
-import { titleControl } from '../titleControl';
 import { zoneColors } from '../data/zoneData';
+import { useMapStore } from '../store/mapStore';
+const store = useMapStore();
+let map: Map;
 
 onMounted(() => {
     const gsiTerrainSource = useGsiTerrainSource(addProtocol);
@@ -15,35 +20,10 @@ onMounted(() => {
     addProtocol("pmtiles", protocol.tile);
 
 
-    const map = new Map({
+    map = new Map({
         container: 'map',
         style: 'https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/pale.json',
-        /*
-                {
-                    version: 8,
-                    sources: {
-                        gsipale: {
-                            type: 'raster',
-                            tiles: [
-                                'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
-                            ],
-                            attribution: '地理院地図Vector（仮称）',
-                        },
-                        gsidem: gsiTerrainSource,
-                    },
-                    layers: [
-                        {
-                            id: 'gsipale',
-                            type: 'raster',
-                            source: 'gsipale',
-                        },
-                    ],
-                    terrain: {
-                        source: 'gsidem',
-                        exaggeration: 1.2,
-                    },
-                },*/
-        center: [139.62, 35.43],
+        center: [139.625, 35.433],
         zoom: 12.3,
         pitch: 43,
         maxPitch: 68,
@@ -75,16 +55,6 @@ onMounted(() => {
 
     map.on('load', () => {
         map.addSource('terrain', gsiTerrainSource);
-        /*map.addSource('plateau', {
-            type: 'vector',
-            tiles: ['https://indigo-lab.github.io/plateau-tokyo23ku-building-mvt-2020/{z}/{x}/{y}.pbf'],
-            minzoom: 10,
-            maxzoom: 16,
-            attribution:
-                "データの出典：<a href='https://github.com/indigo-lab/plateau-tokyo23ku-building-mvt-2020'>plateau-tokyo23ku-building-mvt-2020 by indigo-lab</a> (<a href='https://www.mlit.go.jp/plateau/'>国土交通省 Project PLATEAU</a> のデータを加工して作成)",
-        },);*/
-
-
         map.addSource('yokohama_urf', {
             type: 'vector',
             url: 'pmtiles://yokohama_urf.pmtiles',
@@ -92,18 +62,6 @@ onMounted(() => {
             minzoom: 10,
             maxzoom: 14,
         });
-        /*map.addLayer({
-            id: 'bldg',
-            type: 'fill-extrusion',
-            source: 'plateau',
-            'source-layer': 'bldg',
-            minzoom: 10,
-            maxzoom: 18,
-            paint: {
-                'fill-extrusion-color': '#797979',
-                'fill-extrusion-height': ['get', 'measuredHeight'],
-            },
-        });*/
 
         map.addLayer({
             id: 'hills',
@@ -197,6 +155,10 @@ onMounted(() => {
             if (clickPopupVue) {
                 clickPopupVue.unmount();
             }
+            if (hoverPopupVue) {
+                hoverPopup.remove();
+                hoverPopupVue.unmount();
+            }
             if (e.features) {
                 const zoneNum = e.features[0].properties.function;
                 const popupNode = document.createElement('div');
@@ -210,28 +172,49 @@ onMounted(() => {
             }
         });
 
-
-        map.addControl(new maplibreGl.NavigationControl());
-        map.addControl(new maplibreGl.ScaleControl());
-        map.addControl(new titleControl(), 'top-left');
-        map.addControl(new menuControl(), 'top-left');
-        //map.addControl(new legendControl(), 'top-left');
-        /*map.addControl(
-            new maplibreGl.TerrainControl({
-                source: 'terrain'
-            })
-        );*/
-
-
+        //コントロールボタンの追加
+        map.addControl(new maplibreGl.ScaleControl(),);
+        map.addControl(new maplibreGl.NavigationControl(), 'bottom-right');
+        // map.addControl(new maplibreGl.GeolocateControl({}), 'bottom-right');
+        map.addControl(new menuControl('guide'), 'bottom-left');
+        map.addControl(new menuControl('legend'), 'bottom-left');
     });
-});
 
+
+});
+const moveToResult = (coord: number[]) => {
+    map.jumpTo({ center: [coord[0], coord[1]], zoom: 16 });
+    store.mode = 'menu';
+};
 </script>
 <template>
     <div id="map"></div>
+    <div class="title-container">
+        <MapTitle />
+        <MapSearch @moveto="moveToResult" />
+    </div>
+    <MapGuide />
 </template>
 <style scoped>
 #map {
     height: 100vh;
+    height: 100dvh;
+}
+
+.title-container {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 18rem;
+    z-index: 9999;
+}
+
+
+@media screen and (max-width: 600px) {
+    .title-container {
+
+        left: -9rem;
+        transform: translate(50vw, 0);
+    }
 }
 </style>

@@ -1,6 +1,12 @@
 body {
   height: 100vh;
+  height: 100dvh;
   margin: 0;
+  font-family: "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
+    text-align :justify;
 }
 
 .maplibregl-popup-close-button{
