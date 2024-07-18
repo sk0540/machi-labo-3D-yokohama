@@ -1,19 +1,25 @@
-import { Map, IControl } from 'maplibre-gl';
-import MapMenu from './components/MapMenu.vue';
+import { IControl } from 'maplibre-gl';
+import MapGuideMenu from './components/MapGuideMenu.vue';
+import MapLegendMenu from './components/MapLegendMenu.vue';
 import { createApp } from 'vue'
 
 export class menuControl implements IControl {
     private container: HTMLElement;
-    constructor() {
+    constructor(item: string) {
         this.container = document.createElement('div');
-        const menuVue = createApp(MapMenu);
-        menuVue.mount(this.container);
+        if (item == 'guide') {
+            const menuVue = createApp(MapGuideMenu);
+            menuVue.mount(this.container);
+        } else if (item == 'legend') {
+            const menuVue = createApp(MapLegendMenu);
+            menuVue.mount(this.container);
+        }
     }
 
-    onAdd(map: Map): HTMLElement {
+    onAdd(): HTMLElement {
         return this.container;
     }
 
-    onRemove(map: Map): void {
+    onRemove(): void {
     }
 }
