@@ -1,41 +1,52 @@
 <script setup lang="ts">
 import 'maplibre-gl/dist/maplibre-gl.css'
 import maplibreGl, { Map, Popup, DataDrivenPropertyValueSpecification, addProtocol } from 'maplibre-gl'
+
 import { useGsiTerrainSource } from 'maplibre-gl-gsi-terrain';
 import { Protocol } from "pmtiles";
+
 import { onMounted, createApp, App } from 'vue';
+
 import MapZoneDesc from './MapZoneDesc.vue';
 import MapGuide from './MapGuide.vue';
 import MapTitle from './MapTitle.vue';
 import MapSearch from './MapSearch.vue';
+
 import { menuControl } from '../menuControl';
 import { zoneColors } from '../data/zoneData';
 import { useMapStore } from '../store/mapStore';
-const store = useMapStore();
-let map: Map;
+
+const store = useMapStore();//Piniaデータストア
+let map: Map;//場所検索からEmitで呼び出すため変数として定義
 
 onMounted(() => {
+    //maplibre-gl-gsi-terrainライブラリによる変換プロトコル
     const gsiTerrainSource = useGsiTerrainSource(addProtocol);
+
+    //pmtilesライブラリによる変換プロトコル
     const protocol = new Protocol();
     addProtocol("pmtiles", protocol.tile);
 
 
+
+
     map = new Map({
         container: 'map',
-        style: 'https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/pale.json',
-        center: [139.625, 35.433],
-        zoom: 12.3,
-        pitch: 43,
-        maxPitch: 68,
-        maxBounds: [[136, 33], [143, 37]],
-        minZoom: 9,
-        maxZoom: 17.999,
+        style: 'https://gsi-cyberjapan.github.io/gsivectortile-mapbox-gl-js/pale.json', // 地理院paleベクトルタイル
+        center: [139.625, 35.433], // 初期：横浜中心市街を写す
+        zoom: 12.3, // 初期：建物ポリゴン（z12~）が映る最小ズーム
+        pitch: 43,  // 初期：3Dとして見せる
+        maxPitch: 68, //遠くの地物が空白で映らないのを傾き制限で見せなくする
+        maxBounds: [[136, 33], [143, 37]], // 横浜から離れすぎないよう制限
+        minZoom: 9,      // 横浜全体が映るズームレベル
+        maxZoom: 17.999, // z18以上は地理院地図が映らなくなるので制限
 
     });
 
+    //建物ポリゴンの色を取得しておく
     const paintStatus: DataDrivenPropertyValueSpecification<string> = [
         'match',
-        ['get', 'function'],
+        ['get', 'function'], //建物ポリゴンのfunctionプロパティ
         1, zoneColors[1],
         2, zoneColors[2],
         3, zoneColors[3],
@@ -54,32 +65,37 @@ onMounted(() => {
 
 
     map.on('load', () => {
+        //標高DEM
         map.addSource('terrain', gsiTerrainSource);
+
+        //建物ポリゴンと用途地域領域ポリゴンをまとめたPMTiles
         map.addSource('yokohama_urf', {
             type: 'vector',
             url: 'pmtiles://yokohama_urf.pmtiles',
             attribution: "<a href='https://www.mlit.go.jp/plateau/'>国土交通省 Project PLATEAU</a> のデータを加工して作成",
             minzoom: 10,
-            maxzoom: 14,
+            maxzoom: 14,//PMTilesはz15~の収録がなく非表示になるのを回避
         });
 
         map.addLayer({
             id: 'hills',
-            type: 'hillshade',
+            type: 'hillshade',//3D起伏
             source: 'terrain',
         },
             'gsibv-vectortile-layer-1539'//国土地理院タイルの最背面レイヤの更に背面に追加
         );
+
+        //タイルの境目に標高ノイズを発生させないための白背景
         map.addLayer({
             id: 'background',
             type: 'background',
             minzoom: 9,
             maxzoom: 18,
             paint: { 'background-color': '#fff' }
-        }, 'hills');//タイルの境目に標高ノイズを発生させないための白背景
+        }, 'hills');
         map.addLayer({
             id: 'buildings',
-            type: 'fill-extrusion',
+            type: 'fill-extrusion',//建物を押し出し3Dで表示
             source: 'yokohama_urf',
             'source-layer': 'bldg',
             paint: {
@@ -88,7 +104,7 @@ onMounted(() => {
                     ['get', 'measuredHeight']
                 ,
             },
-        }, 'gsibv-vectortile-layer-2035'//国土地理院タイルの地図記号のすぐ下bの重なり位置に)
+        }, 'gsibv-vectortile-layer-2035'//国土地理院タイルの地図記号のすぐ下の重なり位置に
         );
         map.addLayer({
             id: 'zones',
@@ -104,10 +120,11 @@ onMounted(() => {
                     12,
                     0.2,
                     14,
-                    0.1
+                    0.1//ズームレベルで透明度を変化させて自然な表示に
                 ],
             }
-        }, 'gsibv-vectortile-layer-1604');
+        }, 'gsibv-vectortile-layer-1604'//国土地理院タイルの水域のすぐ上の重なり位置に
+        );
         map.setTerrain({ source: 'terrain' });
 
         //地理院paleスタイルの調整
@@ -122,18 +139,19 @@ onMounted(() => {
             closeButton: false,
             closeOnClick: false
         });
-        let hoverPopupVue: App;
+        let hoverPopupVue: App;//VueAppの変数
         let zoneNum: number;
         map.on('mousemove', 'zones', (e) => {
             if (e.features) {
                 if (zoneNum != e.features[0].properties.function) {
+                    //VueAppが無限増殖するのを防ぐ
                     if (hoverPopupVue) {
                         hoverPopupVue.unmount();
                     }
-                    zoneNum = e.features[0].properties.function;
+                    zoneNum = e.features[0].properties.function;//マウス位置の用途地域タイプを取得
                     const popupNode = document.createElement('div');
                     hoverPopupVue = createApp(MapZoneDesc, {
-                        num: zoneNum, display: 'title'
+                        num: zoneNum, display: 'title',//用途地域名だけの表示
                     });
                     hoverPopupVue.mount(popupNode);
                     hoverPopup.setDOMContent(popupNode);

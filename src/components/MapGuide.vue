@@ -1,19 +1,7 @@
 <template>
-    <div v-show="store.mode == 'guide'" id="info">
+    <div v-if="store.mode == 'guide'" id="info">
         <div class="guide-header">ガイド<button @click="store.mode = 'menu'"><img :src="close" /></button></div>
         <div class="guide-contents">
-            <h2>操作のしかた</h2>
-            <ul>
-                <li class="guide-item"><strong>地域の詳細を見る</strong><br>見たい場所を左クリック／タップ</li>
-                <li class="guide-item"><strong>地図を移動する</strong><br>メイン画面を左ドラッグ／スワイプ</li>
-                <li class="guide-item"><strong>拡大／縮小する</strong><br>マウスホイールを回す／二本指で広げる・狭める</li>
-                <li class="guide-item"><strong>回転させる</strong><br>右ドラッグがCtrlキー＋左ドラッグで<br>左右移動／二本指で回転</li>
-                <li class="guide-item"><strong>傾きを変化させる</strong><br>右ドラッグがCtrlキー＋左ドラッグで<br>上下移動／二本指で上下移動</li>
-                <li class="guide-item"><strong>北が上に向きを戻す</strong><br>左下のコンパスボタン<img :src="compass">を押す</li>
-                <li class="guide-item"><strong>現在位置を取得</strong><br>左下の現在位置ボタン<img :src="locate">を押す
-                </li>
-                <li class="guide-item"><strong>検索した場所に移動する</strong><br>検索入力フォームをクリック／タップして入力し検索</li>
-            </ul>
             <h2>このWebサイトについて</h2>
             「まちラボ3D横浜」は、神奈川県横浜市の市内における都市計画を学ぶことができる3Dのマップです。<br>
             第1弾として用途地域を3Dで調べるマップを提供しています。
@@ -27,6 +15,18 @@
             </blockquote>
 
             このうち横浜市内には12種類の用途地域と市街化調整区域が定められています。
+            <h2>操作のしかた</h2>
+            <ul>
+                <li class="guide-item"><strong>地域の詳細を見る</strong><br>見たい場所を左クリック／タップ</li>
+                <li class="guide-item"><strong>地図を移動する</strong><br>メイン画面を左ドラッグ／スワイプ</li>
+                <li class="guide-item"><strong>拡大／縮小する</strong><br>マウスホイールを回す／二本指で広げる・狭める</li>
+                <li class="guide-item"><strong>回転させる</strong><br>右ドラッグがCtrlキー＋左ドラッグで<br>左右移動／二本指で回転</li>
+                <li class="guide-item"><strong>傾きを変化させる</strong><br>右ドラッグがCtrlキー＋左ドラッグで<br>上下移動／二本指で上下移動</li>
+                <li class="guide-item"><strong>北が上に向きを戻す</strong><br>左下のコンパスボタン<img :src="compass">を押す</li>
+                <li class="guide-item"><strong>現在位置を取得</strong><br>左下の現在位置ボタン<img :src="locate">を押す
+                </li>
+                <li class="guide-item"><strong>検索した場所に移動する</strong><br>検索入力フォームをクリック／タップして入力し検索</li>
+            </ul>
         </div>
     </div>
 </template>
