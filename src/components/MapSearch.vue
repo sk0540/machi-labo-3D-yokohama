@@ -26,20 +26,20 @@ import clear from '../assets/x.svg';
 const store = useMapStore();
 
 interface Feature {
-    type: string; // Feature の種類 ("Feature")
-    geometry: Geometry; // Feature のジオメトリ
-    properties: FeatureProperties; // Feature のプロパティ
+    type: string;
+    geometry: Geometry;
+    properties: FeatureProperties;
 }
 
 interface Geometry {
-    type: string; // ジオメトリの種類 ("Point")
-    coordinates: number[]; // ジオメトリ座標
+    type: string;
+    coordinates: number[];
 }
 
 interface FeatureProperties {
-    addressCode: string; // 住所コード
-    title: string; // 施設名
-    dataSource: number; // データソース
+    addressCode: string;
+    title: string;
+    dataSource: number;
 }
 const searchInput = ref('');
 const searchResults: Ref<Feature[]> = ref([]);
@@ -116,8 +116,9 @@ const emit = defineEmits<{
     flex-grow: 1;
     font-size: 19px;
     text-indent: 0.5em;
-    width: 250px;
+    width: 208px;
     padding: 1px 2px;
+    padding-right: 36px;
 }
 
 #clear-button {

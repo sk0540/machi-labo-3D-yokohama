@@ -1,11 +1,11 @@
 <template>
-    <div class="legend-container">
+    <legend class="legend-container">
         <div class="legend" v-for="zoneNum in zoneNums" :key="zoneNum" :class="displayType(zoneNum)">
             <div class="legend-inner" @click="handleClick(zoneNum)">
                 <MapZoneDesc :num="zoneNum" :display="displayType(zoneNum)" />
             </div>
         </div>
-    </div>
+    </legend>
 </template>
 
 <script setup lang="ts">
