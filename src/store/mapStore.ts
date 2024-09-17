@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useMapStore = defineStore('map', {
     state: () => ({
-        mode: 'menu',
+        mode: 'guide',//初期モード
     }),
     actions: {
         toggleMode(newMode: string) {

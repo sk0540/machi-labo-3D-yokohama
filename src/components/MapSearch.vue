@@ -1,6 +1,6 @@
 <template>
     <div class="maplibregl-ctrl maplibregl-ctrl-group map-search">
-        <input placeholder=" 場所を入力" v-model="searchInput" @click="flipMode" @keydown.enter="addressSearch">
+        <input placeholder="場所を検索" v-model="searchInput" @click="flipMode" @keydown.enter="addressSearch">
         <button id="clear-button" @click="clearInput"><img :src="clear" /></button>
         <button id="search-button" @click="addressSearch"><img :src="search" /></button>
     </div>
