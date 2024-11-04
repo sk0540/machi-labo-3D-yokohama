@@ -1,7 +1,7 @@
 <template>
     <div class="maplibregl-ctrl maplibregl-ctrl-group map-search">
-        <input placeholder="場所を検索" v-model="searchInput" @click="flipMode" @keydown.enter="addressSearch">
-        <button id="clear-button" @click="clearInput"><img :src="clear" /></button>
+        <input placeholder="場所を検索" v-model="searchInput" @click="flipMode" @keydown.enter="addressSearchByEnterKey">
+        <button id="clear-button" @click="clearInput" v-if="searchInput != ''"><img :src="clear" /></button>
         <button id="search-button" @click="addressSearch"><img :src="search" /></button>
     </div>
     <div class="maplibregl-ctrl maplibregl-ctrl-group search-alert" v-if="store.mode == 'search' && searchAlert != ''">
@@ -9,13 +9,12 @@
             searchAlert }}
     </div>
     <div class="maplibregl-ctrl maplibregl-ctrl-group search-result" v-if="store.mode == 'search'">
-
         <div v-for="item in searchResults" class="search-item"
             @click="emitMoveto(item.properties.title, item.geometry.coordinates)">{{
                 item.properties.title }}
         </div>
     </div>
-
+    <div v-if="store.mode == 'menu' && searchInput == ''" class="search-guide">横浜市内の地名を検索できます</div>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
@@ -52,7 +51,7 @@ const addressSearchInternal = async () => {
     const response = await fetch(url);
 
     const data = await response.json();
-    searchResults.value = data.filter((feature: Feature) => feature.properties.addressCode.startsWith('1410' || '1411'));
+    searchResults.value = data.filter((feature: Feature) => feature.properties.addressCode.startsWith('1410') || feature.properties.addressCode.startsWith('1411'));
     if (searchResults.value.length == 0) {
         searchAlert.value = '該当する場所がありませんでした';
     } else {
@@ -62,7 +61,14 @@ const addressSearchInternal = async () => {
 };
 
 
+const addressSearchByEnterKey = (event: KeyboardEvent) => {
+    if (event.keyCode === 13) {
+        addressSearch();
+    }
+};
+
 const addressSearch = async () => {
+
     store.mode = 'search'
     if (Date.now() - lastSearchTime.value < 8000) {
         searchResults.value = [];
@@ -73,6 +79,7 @@ const addressSearch = async () => {
     } else {
         addressSearchInternal();
     }
+
 };
 
 const flipMode = () => {
@@ -131,7 +138,7 @@ const emit = defineEmits<{
     width: 20px;
     height: 20px;
     margin-bottom: -4px;
-    opacity: 0.5;
+    opacity: 0.6;
     height: 2
 }
 
@@ -143,7 +150,7 @@ const emit = defineEmits<{
 
 #search-button img {
     margin-bottom: -4px;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .search-alert {
@@ -156,6 +163,43 @@ const emit = defineEmits<{
     max-height: calc(100dvh - 262px);
     overflow-y: scroll;
     width: 18rem;
+
+
+}
+
+
+
+.search-guide {
+
+    text-align: center;
+    background: #fff;
+    border: #666 1px solid;
+    border-radius: 1.5rem;
+    margin-top: 1.125rem;
+    padding-top: 0.575rem;
+    padding-bottom: 0.525rem;
+    filter: drop-shadow(5px 5px 3px rgba(0, 0, 0, .2));
+}
+
+.search-guide:before {
+    content: "";
+    border: 0.75rem solid transparent;
+    border-bottom: 1.1rem solid #666;
+    position: absolute;
+    top: -70%;
+    left: 50%;
+    transform: translateX(-50%);
+
+}
+
+.search-guide:after {
+    content: "";
+    border: 0.7rem solid transparent;
+    border-bottom: 1.1rem solid #fff;
+    position: absolute;
+    top: -65%;
+    left: 50%;
+    transform: translateX(-50%);
 
 
 }

@@ -12,3 +12,13 @@ body {
 .maplibregl-popup-close-button{
   font-size: 1.125rem;
 }
+
+a{
+  color: rgb(0 71 155);
+  text-decoration-color: rgb(0 71 155 / 50%);
+}
+
+a:visited{
+  color: rgb(85 26 139);
+  text-decoration-color: rgb(85 26 139 / 50%);
+}
