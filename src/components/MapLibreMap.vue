@@ -128,11 +128,14 @@ onMounted(() => {
         map.setTerrain({ source: 'terrain' });
 
         //地理院paleスタイルの調整
+        map.setPaintProperty('gsibv-vectortile-layer-2037', 'text-color', '#000');
         map.setLayoutProperty('gsibv-vectortile-layer-2037', "text-size", { "stops": [[9, 14], [11, 17]] });
         map.setPaintProperty('gsibv-vectortile-layer-2037', 'text-halo-width', 2);
+        map.setPaintProperty('gsibv-vectortile-layer-2203', 'text-color', '#444');
         map.setPaintProperty('gsibv-vectortile-layer-2203', 'text-halo-width', 1.5);
         map.setPaintProperty('gsibv-vectortile-layer-2273', 'text-halo-width', 1.5);
         map.setPaintProperty('gsibv-vectortile-layer-2278', 'text-halo-width', 2);
+        map.setPaintProperty('gsibv-vectortile-layer-2278', 'text-color', '#000');
 
         //追加するポップアップを宣言
         const hoverPopup = new Popup({

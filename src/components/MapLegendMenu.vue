@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { useMapStore } from '../store/mapStore';
 import MapLegend from './MapLegend.vue';
-import close from '../assets/expand_less.svg';
+import close from '../assets/x.svg';
 const store = useMapStore();
 </script>
 <style scoped>
@@ -78,6 +78,8 @@ const store = useMapStore();
 }
 
 .legend-header button img {
-    opacity: 0.5;
+    height: 20px;
+    width: 20px;
+    opacity: 0.6;
 }
 </style>

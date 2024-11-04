@@ -1,10 +1,13 @@
 <template>
     <div v-if="store.mode == 'guide'" id="info">
-        <div class="guide-header">ガイド<button @click="store.mode = 'menu'"><img :src="close" /></button></div>
+
+        <div class="guide-header">
+            <div class="guide-title"><img class="guide-logo" src="/ml3-y.svg" />ガイド</div><button
+                @click="store.mode = 'menu'"><img :src="close" /></button>
+        </div>
         <div class="guide-contents">
             <h2>このWebサイトについて</h2>
-            「まちラボ3D横浜」は、神奈川県横浜市の市内における都市計画を学ぶことができる3Dのマップです。<br>
-            第1弾として用途地域を3Dで調べるマップを提供しています。
+            「まちラボ3D横浜」は、神奈川県横浜市内の都市計画を視覚的に学ぶための3Dのマップです。<br>ここでは「用途地域」を3Dビューで調べられるマップを提供しています。
             <h3>用途地域とは？</h3>
 
             <blockquote>
@@ -20,13 +23,13 @@
                 <li class="guide-item"><strong>地域の詳細を見る</strong><br>見たい場所を左クリック／タップ</li>
                 <li class="guide-item"><strong>地図を移動する</strong><br>メイン画面を左ドラッグ／スワイプ</li>
                 <li class="guide-item"><strong>拡大／縮小する</strong><br>マウスホイールを回す／二本指で広げる・狭める</li>
-                <li class="guide-item"><strong>回転させる</strong><br>右ドラッグがCtrlキー＋左ドラッグで<br>左右移動／二本指で回転</li>
-                <li class="guide-item"><strong>傾きを変化させる</strong><br>右ドラッグがCtrlキー＋左ドラッグで<br>上下移動／二本指で上下移動</li>
-                <li class="guide-item"><strong>北が上に向きを戻す</strong><br>左下のコンパスボタン<img :src="compass">を押す</li>
-                <li class="guide-item"><strong>現在位置を取得</strong><br>左下の現在位置ボタン<img :src="locate">を押す
-                </li>
+                <li class="guide-item"><strong>回転させる</strong><br>右ドラッグがCtrlキー＋左ドラッグで左右移動<br>／二本指で回転</li>
+                <li class="guide-item"><strong>傾きを変化させる</strong><br>右ドラッグがCtrlキー＋左ドラッグで上下移動<br>／二本指で上下移動</li>
+                <li class="guide-item"><strong>北が上の向きを戻す</strong><br>左下のコンパスボタン<img :src="compass">を押す</li>
                 <li class="guide-item"><strong>検索した場所に移動する</strong><br>検索入力フォームをクリック／タップして入力し検索</li>
             </ul>
+            <h2>詳細情報</h2>
+            <a href='https://github.com/sk0540/machi-labo-3D-yokohama'>こちら</a>のGitHubリポジトリにて使用技術の情報やソースコード等を公開しています。
         </div>
     </div>
 </template>
@@ -35,7 +38,6 @@ import { onMounted } from 'vue';
 import { useMapStore } from '../store/mapStore';
 import close from '../assets/x.svg';
 import compass from '../assets/compass.svg';
-import locate from '../assets/geolocate.svg';
 const store = useMapStore();
 
 onMounted(() => {
@@ -98,9 +100,24 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 2.5rem;
+    padding-left: 2rem;
     border-bottom: #ccc 1px solid;
 }
+
+
+.guide-title {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 0.5rem;
+}
+
+.guide-logo {
+    height: 40px;
+    margin-top: 0.5rem;
+    margin-right: 0.25rem;
+}
+
+
 
 .guide-header button {
     background-color: transparent;
@@ -113,7 +130,7 @@ onMounted(() => {
 
 .guide-header button img {
     margin-bottom: -4px;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .guide-header button:hover {
