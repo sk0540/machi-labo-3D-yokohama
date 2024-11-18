@@ -25,8 +25,7 @@ UIフレームワーク
 ## 使用データ
 
 ### ベース地図
-国土地理院が配信している[地理院地図](https://maps.gsi.go.jp/help/index.html)
-を使用
+国土地理院が配信している[地理院地図](https://maps.gsi.go.jp/help/index.html)を使用
 
 
 * 地図データ……地理院地図ベクトルタイル - 地理院地図Vector提供実験（[GitHub](https://github.com/gsi-cyberjapan/gsimaps-vector-experiment)）
@@ -37,9 +36,9 @@ UIフレームワーク
 
 ### 建物と用途地域データ
 
-国土交通省が都市の3Dモデル公開している[Project PLATEAU](https://www.mlit.go.jp/plateau/)のデータを使用
+国土交通省が公開している都市の3Dモデル[Project PLATEAU](https://www.mlit.go.jp/plateau/)のデータを利用
 
-[横浜市 2023年](https://www.geospatial.jp/ckan/dataset/plateau-14100-yokohama-shi-2023)のデータを使用（G空間情報センターから利用可能）
+[横浜市 2023年](https://www.geospatial.jp/ckan/dataset/plateau-14100-yokohama-shi-2023)のデータを（G空間情報センターから利用可能）
 * 建築モデル……外形のポリゴンと建物高さのデータを使用
 * 都市計画決定情報モデル……都市計画区域データ／用途地域データを使用
 

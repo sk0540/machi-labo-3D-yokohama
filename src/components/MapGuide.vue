@@ -2,8 +2,8 @@
     <div v-if="store.mode == 'guide'" id="info">
 
         <div class="guide-header">
-            <div class="guide-title"><img class="guide-logo" src="/ml3-y.svg" />ガイド</div><button
-                @click="store.mode = 'menu'"><img :src="close" /></button>
+            <div class="guide-title"><img class="guide-logo" src="/ml3-y.svg" />ガイド</div>
+            <button @click="store.mode = 'menu'"><img :src="close" /></button>
         </div>
         <div class="guide-contents">
             <h2>このWebサイトについて</h2>
@@ -65,7 +65,7 @@ onMounted(() => {
 <style scoped>
 #info {
     position: fixed;
-    top: 45.5%;
+    top: 47.5%;
     left: 50%;
     width: 550px;
     transform: translate(-50%, -50%);
@@ -75,14 +75,16 @@ onMounted(() => {
     color: #333;
     box-shadow: 0 0 0 2px rgba(0, 0, 0, .1);
 
+
 }
 
 .guide-contents {
     overflow-y: scroll;
-    max-height: calc(100vh - 24.5rem);
-    max-height: calc(100dvh - 24.5rem);
+
     padding: 18px;
-    min-height: 160px;
+    min-height: 80px;
+    max-height: calc(100vh -27.5rem);
+    max-height: calc(100dvh - 27.5rem);
 }
 
 @media screen and (max-width: 600px) {
@@ -100,7 +102,8 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 2rem;
+
+    padding-left: 2.5rem;
     border-bottom: #ccc 1px solid;
 }
 
@@ -108,12 +111,15 @@ onMounted(() => {
 .guide-title {
     display: flex;
     align-items: flex-end;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
 .guide-logo {
     height: 40px;
     margin-top: 0.5rem;
+    margin-left: -0.75rem;
     margin-right: 0.25rem;
 }
 
