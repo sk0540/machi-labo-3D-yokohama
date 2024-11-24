@@ -1,3 +1,5 @@
+//zoneData.ts 用途地域表示の情報リストファイル
+
 
 export const zoneNums: number[] =
     [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 23];

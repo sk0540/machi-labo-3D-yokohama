@@ -55,8 +55,8 @@ pythonの`geopandas`ライブラリで結合データを作成（`sjoin`関数�
 tippecanoeを使い変換でGeoJSONからPMTilesを作成 ->  GitHub Pagesに配置しMapLibreで読込
 
 ## 検索機能
-キーワードの地名を入力して横浜市内の地名に絞込した検索結果からその地点に移動できます。
+横浜市内の地名などをキーワード検索してその地点に移動できます。
 
 地理院地図の地名検索API
 `https://msearch.gsi.go.jp/address-search/AddressSearch`  
-を利用しキーワードから地名などの緯度経度を取得しています。
+を利用し地名などのキーワードから緯度経度情報を取得しています。
