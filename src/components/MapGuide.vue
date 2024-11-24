@@ -2,10 +2,12 @@
     <div v-if="store.mode == 'guide'" id="info">
 
         <div class="guide-header">
-            <div class="guide-title"><img class="guide-logo" src="/ml3-y.svg" />ガイド</div><button
-                @click="store.mode = 'menu'"><img :src="close" /></button>
+            <div class="guide-title"><img class="guide-logo" src="/ml3-y.svg" />ガイド</div>
+            <button @click="store.mode = 'menu'"><img :src="close" /></button>
         </div>
+
         <div class="guide-contents">
+            <div>GitHubリポジトリは<a href='https://github.com/sk0540/machi-labo-3D-yokohama'>こちら</a></div>
             <h2>このWebサイトについて</h2>
             「まちラボ3D横浜」は、神奈川県横浜市内の都市計画を視覚的に学ぶための3Dのマップです。<br>ここでは「用途地域」を3Dビューで調べられるマップを提供しています。
             <h3>用途地域とは？</h3>
@@ -28,8 +30,6 @@
                 <li class="guide-item"><strong>北が上の向きを戻す</strong><br>左下のコンパスボタン<img :src="compass">を押す</li>
                 <li class="guide-item"><strong>検索した場所に移動する</strong><br>検索入力フォームをクリック／タップして入力し検索</li>
             </ul>
-            <h2>詳細情報</h2>
-            <a href='https://github.com/sk0540/machi-labo-3D-yokohama'>こちら</a>のGitHubリポジトリにて使用技術の情報やソースコード等を公開しています。
         </div>
     </div>
 </template>
@@ -65,7 +65,7 @@ onMounted(() => {
 <style scoped>
 #info {
     position: fixed;
-    top: 45.5%;
+    top: 47.5%;
     left: 50%;
     width: 550px;
     transform: translate(-50%, -50%);
@@ -75,14 +75,16 @@ onMounted(() => {
     color: #333;
     box-shadow: 0 0 0 2px rgba(0, 0, 0, .1);
 
+
 }
 
 .guide-contents {
     overflow-y: scroll;
-    max-height: calc(100vh - 24.5rem);
-    max-height: calc(100dvh - 24.5rem);
+
     padding: 18px;
-    min-height: 160px;
+    min-height: 80px;
+    max-height: calc(100vh -27.5rem);
+    max-height: calc(100dvh - 27.5rem);
 }
 
 @media screen and (max-width: 600px) {
@@ -100,7 +102,8 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 2rem;
+
+    padding-left: 2.5rem;
     border-bottom: #ccc 1px solid;
 }
 
@@ -108,12 +111,15 @@ onMounted(() => {
 .guide-title {
     display: flex;
     align-items: flex-end;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
 .guide-logo {
     height: 40px;
     margin-top: 0.5rem;
+    margin-left: -0.75rem;
     margin-right: 0.25rem;
 }
 
@@ -146,6 +152,7 @@ onMounted(() => {
 .guide-contents {
     padding-left: 2.5rem;
     padding-right: 2.5rem;
+    padding-top: 1.5rem;
     padding-bottom: 4rem;
 }
 

@@ -25,8 +25,7 @@ UIフレームワーク
 ## 使用データ
 
 ### ベース地図
-国土地理院が配信している[地理院地図](https://maps.gsi.go.jp/help/index.html)
-を使用
+国土地理院が配信している[地理院地図](https://maps.gsi.go.jp/help/index.html)を使用
 
 
 * 地図データ……地理院地図ベクトルタイル - 地理院地図Vector提供実験（[GitHub](https://github.com/gsi-cyberjapan/gsimaps-vector-experiment)）
@@ -37,9 +36,9 @@ UIフレームワーク
 
 ### 建物と用途地域データ
 
-国土交通省が都市の3Dモデル公開している[Project PLATEAU](https://www.mlit.go.jp/plateau/)のデータを使用
+国土交通省が公開している都市の3Dモデル[Project PLATEAU](https://www.mlit.go.jp/plateau/)のデータを利用
 
-[横浜市 2023年](https://www.geospatial.jp/ckan/dataset/plateau-14100-yokohama-shi-2023)のデータを使用（G空間情報センターから利用可能）
+[横浜市 2023年](https://www.geospatial.jp/ckan/dataset/plateau-14100-yokohama-shi-2023)のデータを（G空間情報センターから利用可能）
 * 建築モデル……外形のポリゴンと建物高さのデータを使用
 * 都市計画決定情報モデル……都市計画区域データ／用途地域データを使用
 
@@ -56,8 +55,8 @@ pythonの`geopandas`ライブラリで結合データを作成（`sjoin`関数�
 tippecanoeを使い変換でGeoJSONからPMTilesを作成 ->  GitHub Pagesに配置しMapLibreで読込
 
 ## 検索機能
-キーワードの地名を入力して横浜市内の地名に絞込した検索結果からその地点に移動できます。
+横浜市内の地名などをキーワード検索してその地点に移動できます。
 
 地理院地図の地名検索API
 `https://msearch.gsi.go.jp/address-search/AddressSearch`  
-を利用しキーワードから地名などの緯度経度を取得しています。
+を利用し地名などのキーワードから緯度経度情報を取得しています。

@@ -183,23 +183,25 @@ const emit = defineEmits<{
 
 .search-guide:before {
     content: "";
-    border: 0.75rem solid transparent;
-    border-bottom: 1.1rem solid #666;
     position: absolute;
-    top: -70%;
+    background: #666;
     left: 50%;
-    transform: translateX(-50%);
+    width: 20px;
+    height: 18px;
+    clip-path: polygon(0 100%, 50% 0, 100% 100%);
+    transform: translateX(-50%) translateY(-150%);
 
 }
 
 .search-guide:after {
     content: "";
-    border: 0.7rem solid transparent;
-    border-bottom: 1.1rem solid #fff;
     position: absolute;
-    top: -65%;
+    background: #fff;
     left: 50%;
-    transform: translateX(-50%);
+    width: 19px;
+    height: 17px;
+    clip-path: polygon(0 100%, 50% 0, 100% 100%);
+    transform: translateX(-50%) translateY(-150%);
 
 
 }

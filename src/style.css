@@ -1,3 +1,6 @@
+/* style.css - 共通スタイル */
+
+
 body {
   height: 100vh;
   height: 100dvh;
@@ -9,15 +12,19 @@ body {
     text-align :justify;
 }
 
+/* 用途地域ポップアップの閉じるボタン 
+MapLibreのスタイルを上書き */
 .maplibregl-popup-close-button{
   font-size: 1.125rem;
 }
 
+/* リンク */
 a{
   color: rgb(0 71 155);
   text-decoration-color: rgb(0 71 155 / 50%);
 }
 
+/* 訪問済リンク */
 a:visited{
   color: rgb(85 26 139);
   text-decoration-color: rgb(85 26 139 / 50%);
