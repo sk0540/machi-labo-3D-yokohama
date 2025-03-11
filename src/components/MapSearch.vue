@@ -116,7 +116,7 @@ const emit = defineEmits<{
     display: flex;
     height: 38px;
     margin-top: 10px;
-    border-radius: 4px;
+    border-radius: 2px;
 }
 
 .map-search input {

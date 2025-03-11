@@ -71,7 +71,7 @@ onMounted(() => {
     transform: translate(-50%, -50%);
     z-index: 9999;
     background: #fff;
-    border-radius: 4px;
+    border-radius: 2px;
     color: #333;
     box-shadow: 0 0 0 2px rgba(0, 0, 0, .1);
 

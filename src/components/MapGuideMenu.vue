@@ -15,6 +15,7 @@
     flex-direction: column;
     align-items: center;
     margin-bottom: 30px;
+    border-radius: 8px;
 }
 
 #guide-menu button {

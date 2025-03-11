@@ -21,6 +21,7 @@ const store = useMapStore();
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-radius: 8px;
 }
 
 .map-menu button {
@@ -42,6 +43,7 @@ const store = useMapStore();
     max-height: calc(100dvh - 227px);
     width: 15rem;
     margin-bottom: 13px;
+    border-radius: 8px;
 }
 
 @media screen and (max-height: 24rem) {
